@@ -1,0 +1,20 @@
+{
+  "Assigned_to": {
+    "c12d3caa37785348c576a485c3990e5b": "Kathirvel Natesan",
+    "fc2bc041c3e331545ecc9e8f05013192": "Ayyappan Dharmalingam",
+    "516c700d1b1a3340def34225bd4bcbb2": "Poornima Narendrakumar",
+    "3c2b4845476bf9141806ef4d646d436c": "Vishnu Sindhu Padala Govinarao"
+  },
+  "Assignments_groups": {
+    "d": "Desktop Infrastructure Support",
+    "afe7cb200f7b61006616e388b1050ebc": "Desktop Configuration Management",
+    "abe7cb200f7b61006616e388b1050ebd": "Desktop Engineering"
+  },
+  "Task_state": {
+    "1": "Open",
+    "2": "Work In Progress",
+    "3": "Pending",
+    "4": "Closed-Complete",
+    "5": "Closed-Completed"
+  }
+}
