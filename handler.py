@@ -49,7 +49,7 @@ def getTaskState(stateID: str) -> str :
     if settings["Task_state"] :
         for taskStateID,taskState in settings["Task_state"].items() :
             if stateID == taskStateID :
-                userName = taskState
+                taskStateStr = taskState
                 break
     return taskStateStr
 

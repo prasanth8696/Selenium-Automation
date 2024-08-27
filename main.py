@@ -18,7 +18,7 @@ def main() :
     #Note: for csv and xlsx format we have limitations 
     # we can store 32000+ characters in excel and csv formats but our description sometimes will cross this limit
     #for that using JSON format
-    TASK_REPORT_PATH = r"C:\Users\10731263\Downloads\sc_task (1).json"
+    TASK_REPORT_PATH = r"C:\Users\10731263\Downloads\sc_task (2).json"
 
     #load CMDB details
     computerList = pd.read_excel(CMDB_FILE_PATH)
