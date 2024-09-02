@@ -1,0 +1,86 @@
+{
+    "office": {
+        "rootCause": "Office Update",
+        "solution": "MS Office",
+        "fixedDeployed": ""
+    },
+
+    "securityUpdate": {
+        "rootCause": "OS Security Update",
+        "solution": "OS Update",
+        "fixedDeployed": ""
+    },
+    ".netFrameWork": {
+        "rootCause": ".NET Framwork Update",
+        "solution": "OS Update",
+        "fixedDeployed": ""
+    },
+    "chrome": {
+        "rootCause": "Application Version",
+        "solution": "Chrome",
+        "fixedDeployed": "Auto Update"
+    },
+    "firefox": {
+        "rootCause": "Application Version",
+        "solution": "Firefox",
+        "fixedDeployed": "Auto Update"
+    },
+    "edge": {
+        "rootCause": "Application Version",
+        "solution": "Edge Chromium",
+        "fixedDeployed": "Auto Update"
+    },
+    "uwp": {
+        "rootCause": "UWP Apps",
+        "solution": "MS Store",
+        "fixedDeployed": "Assess"
+    },
+    "zoom": {
+        "rootCause": "Application Version",
+        "solution": "Zoom",
+        "fixedDeployed": ""
+    },
+    "nodeJS": {
+        "rootCause": "Application Version",
+        "solution": "nodeJS",
+        "fixedDeployed": ""
+    },
+    "adobe": {
+        "rootCause": "Application Version",
+        "solution": "adobe",
+        "fixedDeployed": ""
+    },
+    "webex": {
+        "rootCause": "Application Version",
+        "solution": "Webex",
+        "fixedDeployed": ""
+    },
+    "ivanti": {
+        "rootCause": "Application Version",
+        "solution": "Ivanti",
+        "fixedDeployed": ""
+    },
+    "Citrix": {
+        "rootCause": "Application Version",
+        "solution": "Citrix",
+        "fixedDeployed": ""
+    },
+    "gpo": {
+        "rootCause": "GPO",
+        "solution": "GP Update",
+        "fixedDeployed": ""
+    },
+    "application": {
+        "rootCause": "Application Version",
+        "solution": "",
+        "fixedDeployed": ""
+    },
+    "deafult": {
+        "rootCause": "",
+        "solution": "",
+        "fixedDeployed": ""
+    }
+    
+    
+
+}

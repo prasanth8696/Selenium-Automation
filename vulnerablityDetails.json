@@ -1,0 +1,40 @@
+[
+    {
+        "name": "office",
+        "identificationString": "Microsoft Office",
+        "results": [
+            "C:\\Program Files\\Microsoft Office\\root\\Office16\\GRAPH.EXE",
+            "HKLM\\SOFTWARE\\Microsoft\\Office\\15.0\\Common\\ProductVersion LastProduct"
+        ]
+    },
+    {
+        "name": "securityUpdate",
+        "identificationString": "Microsoft Windows Security Update",
+        "results": [
+            "%windir%\\system32\\ntoskrnl.exe"
+        ]
+    },
+    {
+        "name": ".netFrameWork",
+        "identificationString": ".NET Framework Update",
+        "results": [
+            "%windir%\\Microsoft.NET\\Framework64",
+            "%windir%\\Microsoft.NET\\Framework"
+        ]
+    },
+    {
+        "name": "officeRuntime",
+        "identificationString": "Microsoft Outlook",
+        "results": [
+            "C:\\Program Files\\Microsoft Office\\root\\Office16\\OUTLOOK.EXE"
+        ]
+    },
+    {
+        "name": "uwp",
+        "identificationString": "Microsoft Office app",
+        "results": [
+            "Microsoft vulnerable Office app detected"
+        ]
+    }
+    
+]

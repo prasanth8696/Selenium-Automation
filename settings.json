@@ -1,12 +1,24 @@
 {
   "Assigned_to": {
-    "c12d3caa37785348c576a485c3990e5b": "Kathirvel Natesan",
-    "fc2bc041c3e331545ecc9e8f05013192": "Ayyappan Dharmalingam",
-    "516c700d1b1a3340def34225bd4bcbb2": "Poornima Narendrakumar",
-    "3c2b4845476bf9141806ef4d646d436c": "Vishnu Sindhu Padala Govinarao"
+    "c12d3caa37785348c576a485c3990e5b": {
+      "Full_name": "Kathirvel Natesan",
+      "User_id": "knatesan"
+    },
+    "fc2bc041c3e331545ecc9e8f05013192": {
+      "Full_name": "Ayyappan Dharmalingam",
+      "User_id": "adharmalingam"
+    },
+    "516c700d1b1a3340def34225bd4bcbb2": {
+      "Full_name": "Poornima Narendrakumar",
+      "User_id": "pnarendrakumar"
+    },
+    "3c2b4845476bf9141806ef4d646d436c": {
+      "Full_name": "Vishnu Sindhu Padala Govinarao",
+      "User_id": "vgovinarao"
+    }
   },
   "Assignments_groups": {
-    "d": "Desktop Infrastructure Support",
+    "e3e7cb200f7b61006616e388b1050ebf": "Desktop Infrastructure Support",
     "afe7cb200f7b61006616e388b1050ebc": "Desktop Configuration Management",
     "abe7cb200f7b61006616e388b1050ebd": "Desktop Engineering"
   },
@@ -15,6 +27,21 @@
     "2": "Work In Progress",
     "3": "Pending",
     "4": "Closed-Complete",
-    "5": "Closed-Completed"
-  }
+    "5": "Closed-Cancelled"
+  },
+  "Current_mode": "",
+  "Deafult_mode": "currentUser",
+  "Available_modes": [
+    "currentUser",
+    "open",
+    "all"
+  ],
+  "Search_filters": [],
+  "openTasksLink": "https://imf.service-now.com/now/nav/ui/classic/params/target/sc_task_list.do%3Fsysparm_query%3Dactive%253Dtrue%255Eassignment_group%253Dafe7cb200f7b61006616e388b1050ebc%255EORassignment_group%253Dabe7cb200f7b61006616e388b1050ebd%255EORassignment_group%253De3e7cb200f7b61006616e388b1050ebf%255EORassignment_group%253Defe7cb200f7b61006616e388b1050ebf%255EORassignment_group%253D8fe7cb200f7b61006616e388b1050e63%255EstateIN1%252C2%255Eshort_descriptionLIKEremediate%2520vulnerability%255Eassigned_to%253D",
+  "allTasksLink": "https://imf.service-now.com/now/nav/ui/classic/params/target/sc_task_list.do%3Fsysparm_query%3Dactive%253Dtrue%255Eassignment_group%253Dafe7cb200f7b61006616e388b1050ebc%255EORassignment_group%253Dabe7cb200f7b61006616e388b1050ebd%255EORassignment_group%253De3e7cb200f7b61006616e388b1050ebf%255EORassignment_group%253Defe7cb200f7b61006616e388b1050ebf%255EORassignment_group%253D8fe7cb200f7b61006616e388b1050e63%255EstateIN1%252C2%255Eshort_descriptionLIKEremediate%2520vulnerability%255Eassignment_groupSTARTSWITHDesktop%26sysparm_first_row%3D1%26sysparm_view%3D",
+  "CMDB_FILE_PATH": "C:\\Users\\10731263\\Downloads\\cmdb_ci_computer (1).xlsx",
+  "TASK_REPORT_PATH": "C:\\Users\\10731263\\Downloads\\sc_task (1).json",
+  "QUALYS_RAW_REPORT_PATH": "C:\\Users\\10731263\\Downloads\\Scheduled-Report-Cloud-Agent-Report-non_Superseded_New-20240902054505.csv",
+  "QUALYS_REPORT_PATH": "os.path.join(os.getcwd(),'Scheduled-Report-Cloud-Agent-Report-non_Superseded_New.xlsx')",
+  "CHROME_DRIVER_PATH": "C:\\Users\\10731263\\Downloads\\chromedriver-win64\\chromedriver-win64\\chromedriver.exe"
 }

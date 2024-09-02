@@ -11,6 +11,19 @@ if not os.path.exists("./settings.json") :
     exit(-1)
 with open("./settings.json","r") as file :
     settings: dict = json.load(file)
+
+
+#if modify the path if platform is windows
+# if os.name == "nt" :
+#     for var,value in settings.items() :
+#         if var.find("PATH") != -1 :
+#             new = value.replace("\\\\","\\")
+#             settings[var] = new
+#             print(value.replace("\\\\","\\"))
+#             print(settings[var])
+# print(settings)
+
+
         
 
 def getVulnerablityName(qualysReport: DataFrame | Series,QIDList: list ) -> str :
@@ -24,23 +37,24 @@ def getVulnerablityName(qualysReport: DataFrame | Series,QIDList: list ) -> str 
     
     return vulnerablityName
 
-def getAssigmentGroup(groupID: str) -> str :
-    assignmentGroup = groupID
+def getAssigmentGroup(groupID: str) -> dict :
+    assignmentGrpDetails: dict = { "isDesktop" : False,"groupName" : groupID } 
     if settings["Assignments_groups"] :
         for grpID,assignment_grp in settings["Assignments_groups"].items() :
             if groupID == grpID :
-                assignmentGroup = assignment_grp
+                assignmentGrpDetails["groupName"] = assignment_grp
+                assignmentGrpDetails["isDesktop"] = True 
                 break
-    return assignmentGroup
+    return assignmentGrpDetails
 
 
 
 def getAssignedTo(userID) -> str :
-    userName = userID
+    userName: str = userID
     if settings["Assigned_to"] :
-        for assignedToID,assignedTo in settings["Assigned_to"].items() :
+        for assignedToID,assignedToDetails in settings["Assigned_to"].items() :
             if userID == assignedToID :
-                userName = assignedTo
+                userName = assignedToDetails["Full_name"]
                 break
     return userName
 
@@ -61,7 +75,7 @@ def createReport(validatedTaskList: list) -> str :
     if not os.path.isdir("./reports") :
         os.mkdir("./reports")
     with open("./reports/validatedTaskList.json",'w') as file :
-        json.dump({"records" : validatedTaskList},file)
+        json.dump({"records" : validatedTaskList},file,indent=2)
     #convert to Xlsx format
     df = pd.DataFrame(validatedTaskList)
     df.to_excel("./reports/validatedTaskList.xlsx",sheet_name="Vulnerablity Tasks Report",index=False)
