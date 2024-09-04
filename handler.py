@@ -69,13 +69,13 @@ def getTaskState(stateID: str) -> str :
 
 
 
-def createReport(validatedTaskList: list) -> str :
+def createReport(validatedTaskList: list,validatedTaskDict: dict) -> str :
 
     #convert the dictionary to Json format
     if not os.path.isdir("./reports") :
         os.mkdir("./reports")
     with open("./reports/validatedTaskList.json",'w') as file :
-        json.dump({"records" : validatedTaskList},file,indent=2)
+        json.dump(validatedTaskDict,file,indent=2)
     #convert to Xlsx format
     df = pd.DataFrame(validatedTaskList)
     df.to_excel("./reports/validatedTaskList.xlsx",sheet_name="Vulnerablity Tasks Report",index=False)

@@ -4,6 +4,11 @@
         "solution": "MS Office",
         "fixedDeployed": ""
     },
+    "officeRuntime":{
+        "rootCause": "Office Runtime",
+        "solution": "vulnerablityDetails['identificationString']",
+        "fixedDeployed": ""
+    },
 
     "securityUpdate": {
         "rootCause": "OS Security Update",

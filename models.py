@@ -11,7 +11,7 @@ taskSchema: dict = {
     "Assigned To": "",
     "Assignment Group": "",
     "QID List": [],
-    "Physical": "",
+    "Physical": False,
     "Total Asset Count ": 0,
     "In Service Count ": 0,
     "In Stock Count": 0,

@@ -40,6 +40,8 @@ def main() :
 
 
     validatedTaskList: list = []
+    #create another dict for json
+    validatedTaskDict: dict = {}
     for task in taskList['records'] :
 
         #check task is under Desktop Infra Support or Desktop Configuration Management or Desktop Engineering
@@ -98,9 +100,10 @@ def main() :
             taskDetails["Non-Remediated String"] = nonRemediatedDetails["nonRemediatedString"]
 
         validatedTaskList.append(taskDetails) 
+        validatedTaskDict[task["number"]] = taskDetails
 
     #create the report
-    createReport(validatedTaskList=validatedTaskList)
+    createReport(validatedTaskList=validatedTaskList,validatedTaskDict=validatedTaskDict)
     
     
 
