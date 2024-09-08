@@ -4,3 +4,5 @@ example.py
 outputs.py 
 venv
 selenium_handler(copy).py
+logs/
+reports/

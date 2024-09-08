@@ -1,3 +1,6 @@
+import os
+import logging
+from datetime import datetime
 from handler import settings
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -9,6 +12,35 @@ from selenium.common.exceptions import ElementNotVisibleException, ElementNotInt
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
+
+
+
+#enable logging
+logger: logging.getLogger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+
+# Create a file handler
+if not os.path.exists(settings["Log_path"]):
+    os.mkdir(settings["Log_path"])
+
+fullLogName: str = os.path.join(settings["Log_path"],eval(settings["Selenium_log_name"]))
+fh = logging.FileHandler(fullLogName)
+fh.setLevel(logging.DEBUG)
+
+
+# Create a formatter
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+fh.setFormatter(formatter)
+
+# Add handlers to the logger
+logger.addHandler(fh)
+
+if settings['Console_logs'] :
+    # Create a console handler
+    ch = logging.StreamHandler()
+    ch.setLevel(logging.DEBUG)
+    ch.setFormatter(formatter)
+    logger.addHandler(ch)
 
 
 
@@ -94,7 +126,7 @@ def snowInitialProcessForTasks(driver:webdriver.Chrome):
         #wait for Shadow Host
         shadowHost: WebElement = waitForElement(driver,By.TAG_NAME,"macroponent-f51912f4c700201072b211d4d8c26010")
         #Find the shadow root from the shadow host
-        shadowRoot: WebElement = getShadowRoot(shadowHost)
+        shadowRoot: WebElement = getShadowRoot(driver,shadowHost)
         #find the mainIframe and switch to iframe
         mainIframe: WebElement = shadowRoot.find_element(By.CSS_SELECTOR,"iframe#gsft_main")
 
