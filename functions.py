@@ -101,7 +101,7 @@ def getNonRemediatedString(activeMachineDetails: DataFrame | Series) -> str :
             if activeMachine["Last Detected(In Days)"] < 5 :
                 nonRemediatedString += f"{activeMachine['NetBIOS'].lower()} \n"
             else:
-                nonRemediatedString += f"{activeMachine['NetBIOS'].lower()} - last detected {activeMachine["Last Detected(In Days)"]} Days \n"
+                nonRemediatedString += f"{activeMachine['NetBIOS'].lower()} - last detected {activeMachine['Last Detected(In Days)']} Days \n"
 
         else:
             lastDetectedString += f"{activeMachine['NetBIOS'].lower()} - last detected {activeMachine['Last Detected(In Days)']} Days- \n"

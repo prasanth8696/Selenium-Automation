@@ -61,7 +61,7 @@ def getCurrentUserDetails(currentUserID: str ) -> dict:
     for assignedToID,assignedToDetails in settings["Assigned_to"].items() :
         if currentUserID == assignedToDetails["User_id"] :
 
-            logger.debug(f"currentUserID is matched with default assignTo(f{assignedToDetails["User_id"]}) details in settings ")
+            logger.debug(f"currentUserID is matched with default assignTo(f{assignedToDetails['User_id']}) details in settings ")
             currentUserDetails = {"snowID": assignedToID,"userDetails":assignedToDetails}
             logger.debug("match found so breakin the loop")
             break
@@ -77,11 +77,11 @@ def getSnowLinkandUserDetails(currentMode: str)  :
     #required Details snoe link and currentUser Details
     requiredDetails: dict = {}
 
-    #logger.debug("getting currentUserId from who invoke the script")
-    # currentUser: str = getpass.getuser()
-    #logger.debug(f"script is invoked by {currentUser}")
-    # currentUser = currentUser.split("\\")[-1]
-    currentUser = "adharmalingam"
+    logger.debug("getting currentUserId from who invoke the script")
+    currentUser: str = getpass.getuser()
+    logger.debug(f"script is invoked by {currentUser}")
+    currentUser = currentUser.split("\\")[-1]
+    #currentUser = "adharmalingam"
 
     currentUserDetails: dict = getCurrentUserDetails(currentUser)
 
@@ -104,7 +104,7 @@ def getSnowLinkandUserDetails(currentMode: str)  :
         #for testing you can change give your ID directly here
        
         requiredDetails["snowLink"] = openTaskSnowLink + currentUserDetails["snowID"] + "%26sysparm_first_row%3D1%26sysparm_view%3D"
-        logger.debug(f"snow link for current user: {requiredDetails["snowLink"]} ")
+        logger.debug(f"snow link for current user: {requiredDetails['snowLink']} ")
         logger.info("getting snow link for currentuser - Done" )
 
     elif currentMode == "open":
@@ -112,14 +112,14 @@ def getSnowLinkandUserDetails(currentMode: str)  :
         logger.info("open mode selected")
         logger.info("getting snow link for open tasks - Started" )
         requiredDetails["snowLink"] = settings["openTasksLink"]
-        logger.debug(f"snow link for open tasks: {requiredDetails["snowLink"]} ")
+        logger.debug(f"snow link for open tasks: {requiredDetails['snowLink']} ")
         logger.info("getting snow link for open tasks - Done" )
     elif currentMode == "all" :
 
         logger.info("all mode selected")
         logger.info("getting snow link for all tasks - Started" )
         requiredDetails["snowLink"] = settings["allTasksLink"]
-        logger.debug(f"snow link for all tasks: {requiredDetails["snowLink"]} ")
+        logger.debug(f"snow link for all tasks: {requiredDetails['snowLink']} ")
         logger.info("getting snow link for all tasks - Done" )
     else :
         logger.debug("current settings not maching with available modes settings")
@@ -252,7 +252,7 @@ def updateSingleTaskInSnow(driver: webdriver,currentUserDetails: dict,validatedT
         logger.debug(f"assignTo value: {assignedToTagValue}")
         #check if it is null then it is open task, assign the task who running this script
         if not assignedToTagValue :
-            logger.debug(f"assigned to value is empty, assigning current task({taskNumber}) to currentUser{currentUserDetails["userDetails"]["User_id"]}")
+            logger.debug(f"assigned to value is empty, assigning current task({taskNumber}) to currentUser{currentUserDetails['userDetails']['User_id']}")
             selectAriaDropDown(driver,assignedTo,currentUserDetails["userDetails"]["User_id"])
         else:
             logger.debug("assignTo is not empty")
@@ -398,7 +398,7 @@ def updateSingleTaskInSnow(driver: webdriver,currentUserDetails: dict,validatedT
         #if already value is there skip the update
         rootCauseTagValue: str = rootCauseTag.get_attribute("value")
         if not rootCauseTagValue :
-            logger.debug(f"rootcause tag is empty adding rootcause as {vulnerablityDetails["rootCause"]}")
+            logger.debug(f"rootcause tag is empty adding rootcause as {vulnerablityDetails['rootCause']}")
             rootCauseTag.send_keys(vulnerablityDetails["rootCause"])
 
         #solution Tag
@@ -407,8 +407,8 @@ def updateSingleTaskInSnow(driver: webdriver,currentUserDetails: dict,validatedT
         #if already value is there skip the update
         solutionTagValue: str = solutionTag.get_attribute("value")
         if not solutionTagValue :
-            logger.debug(f"solution tag is empty adding solution as {vulnerablityDetails["solution"]}")
-            solutionTag.send_keys(vulnerablityDetails["solution"])
+            logger.debug(f"solution tag is empty adding solution as {vulnerablityDetails['solution']}")
+            solutionTag.send_keys(vulnerablityDetails['solution'])
 
         #remediation Tag
         remediationTag: WebElement = vulnerablityTags["remediationTag"]
@@ -423,7 +423,7 @@ def updateSingleTaskInSnow(driver: webdriver,currentUserDetails: dict,validatedT
                 logger.debug("this is open task,adding value as newTask")
                 remediationTag.send_keys("newTask")
             else:
-                logger.debug(f"Adding value as {vulnerablityDetails["fixedDeployed"]}")
+                logger.debug(f"Adding value as {vulnerablityDetails['fixedDeployed']}")
                 remediationTag.send_keys(vulnerablityDetails["fixedDeployed"])
 
             logger.info("working on vulnerablity tags from service now form UI - Done")
