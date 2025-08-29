@@ -47,9 +47,9 @@
   "currentUserTasksLink": "https://imf.service-now.com/now/nav/ui/classic/params/target/sc_task_list.do%3Fsysparm_query%3Dactive%253Dtrue%255Eassignment_group%253Dafe7cb200f7b61006616e388b1050ebc%255EORassignment_group%253Dabe7cb200f7b61006616e388b1050ebd%255EORassignment_group%253De3e7cb200f7b61006616e388b1050ebf%255EstateIN1%252C2%255Eshort_descriptionLIKEremediate%2520vulnerability%255Eassigned_to%253D",
   "openTasksLink": "https://imf.service-now.com/now/nav/ui/classic/params/target/sc_task_list.do%3Fsysparm_query%3Dactive%253Dtrue%255Eassignment_group%253Dafe7cb200f7b61006616e388b1050ebc%255EORassignment_group%253Dabe7cb200f7b61006616e388b1050ebd%255EORassignment_group%253De3e7cb200f7b61006616e388b1050ebf%255EstateIN1%252C2%255Eshort_descriptionLIKEremediate%2520vulnerability%255Eassigned_to%253D%26sysparm_first_row%3D1%26sysparm_view%3D",
   "allTasksLink": "https://imf.service-now.com/now/nav/ui/classic/params/target/sc_task_list.do%3Fsysparm_query%3Dactive%253Dtrue%255Eassignment_group%253Dafe7cb200f7b61006616e388b1050ebc%255EORassignment_group%253Dabe7cb200f7b61006616e388b1050ebd%255EORassignment_group%253De3e7cb200f7b61006616e388b1050ebf%255EORassignment_group%253Defe7cb200f7b61006616e388b1050ebf%255EORassignment_group%253D8fe7cb200f7b61006616e388b1050e63%255EstateIN1%252C2%255Eshort_descriptionLIKEremediate%2520vulnerability%255Eassignment_groupSTARTSWITHDesktop%26sysparm_first_row%3D1%26sysparm_view%3D",
-  "CMDB_FILE_PATH": "C:\\Users\\adharmalingam\\Downloads\\cmdb_ci_computer.xlsx",
-  "TASK_REPORT_PATH": "C:\\Users\\adharmalingam\\Downloads\\sc_task.json",
-  "QUALYS_RAW_REPORT_PATH": "C:\\Users\\adharmalingam\\Downloads\\Scheduled-Report-Cloud-Agent-Report-non_Superseded_New1-20250829054505.csv",
+  "CMDB_FILE_PATH": "",
+  "TASK_REPORT_PATH": "" ,
+  "QUALYS_RAW_REPORT_PATH": "",
   "QUALYS_REPORT_PATH": "os.path.join(os.getcwd(),'reports','Scheduled-Report-Cloud-Agent-Report-non_Superseded_New-{}.xlsx'.format(datetime.today().strftime('%Y%m%d')) )",
   "CHROME_DRIVER_PATH": ""
 }
