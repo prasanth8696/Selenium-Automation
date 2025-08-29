@@ -2,6 +2,7 @@ import os
 import json
 import logging
 from datetime import datetime
+from datetime import date,timedelta
 import pandas as pd
 from pandas import DataFrame,Series
 
@@ -119,6 +120,41 @@ def getTaskState(stateID: str) -> str :
     return taskStateStr
 
 
+def fileCleanup(path=os.getcwd(),age=2) :
+
+    logger.info("Delting old  files - Started")
+    for fileDetails in [ { "rootPath" : rootPath, "fileName" : fileName } for rootPath,_,fileNameList in os.walk(path) if os.path.basename(rootPath) == "logs" or os.path.basename(rootPath) == "reports" for fileName in fileNameList ] :
+
+        fileName = fileDetails["fileName"]
+        rootPath = fileDetails["rootPath"]
+        #by default assign default date , anyway timediff will be zero nothing will be deleted
+        fileCreatedDate: date = datetime.today().date()
+        #checking log files
+        if  fileName.startswith("selenium")  :
+            fileCreatedDate : date = datetime.strptime(os.path.splitext(fileName)[0].split("selenium-")[-1],'%d-%m-%Y').date()
+
+        elif fileName.startswith("ticketExtraction") :
+            fileCreatedDate : date = datetime.strptime(os.path.splitext(fileName)[0].split("ticketExtraction-")[-1],'%d-%m-%Y').date()
+
+        elif fileName.startswith("Scheduled-Report-Cloud-Agent-Report-non_Superseded_New") :
+            fileCreatedDate : date = datetime.strptime(os.path.splitext(fileName)[0].split("-")[-1],"%Y%m%d").date()
+
+        #get the time difference to delete the files
+        timeDifference : timedelta = datetime.today().date() - fileCreatedDate
+
+        if(timeDifference.days >= age ) :
+
+            logger.info(f"{fileName} age is grater than {age} days, deleting the file : {timeDifference.days}")
+            os.remove( os.path.join(rootPath,fileName))
+            #print(fileName,rootPath)
+        else :
+            logger.info(f"{fileName} age is less than {age} days, skipping the deletion : {timeDifference.days}")
+
+    logger.info("Delting old files - Done")
+
+
+
+    
 
 def createReport(validatedTaskList: list,validatedTaskDict: dict) -> str :
     

@@ -6,7 +6,7 @@ import pandas as pd
 from pandas import DataFrame,Series
 from csv_handler import convert_csv_to_xlsx
 from functions import getMachineList,getQIDList,getNonRemediatedDetails,findAgingTicket,findVulnerablityDetails
-from handler import getAssigmentGroup,getAssignedTo,getVulnerablityName,createReport,getTaskState,settings
+from handler import getAssigmentGroup,getAssignedTo,getVulnerablityName,createReport,getTaskState,fileCleanup,settings
 from models import taskSchema
 from task_update import updateTasksInSnow
 
@@ -41,6 +41,7 @@ if settings['Console_logs'] :
 
 def main() :
     logger.info("main function started")
+    fileCleanup()
     logger.info("get all the required path from settings - Started")
     CMDB_FILE_PATH: str = settings["CMDB_FILE_PATH"]
     TASK_REPORT_PATH: str = settings["TASK_REPORT_PATH"]
@@ -208,29 +209,29 @@ def main() :
  
             
 
-        #create the report
-        logger.info("creating report for non remediated details for each tasks - Started")
-        createReport(validatedTaskList=validatedTaskList,validatedTaskDict=validatedTaskDict)
-        logger.info("creating report for non remediated details for each tasks - Done")
+    #create the report
+    logger.info("creating report for non remediated details for each tasks - Started")
+    createReport(validatedTaskList=validatedTaskList,validatedTaskDict=validatedTaskDict)
+    logger.info("creating report for non remediated details for each tasks - Done")
 
-        #if ticket update is enabled then update the tickets in snow
-        logger.info("checking Ticket_update is enabled or not in settings for invoke selenium - Started")
-        if settings["Ticket_update"] :
-            logger.debug("Ticket_update is enabled in the settings")
+    #if ticket update is enabled then update the tickets in snow
+    logger.info("checking Ticket_update is enabled or not in settings for invoke selenium - Started")
+    if settings["Ticket_update"] :
+        logger.debug("Ticket_update is enabled in the settings")
 
-            logger.info("Invoking selenium to update the tickets in service now - Started")
-            response: bool = updateTasksInSnow(validatedTaskDict)
-            logger.info("Invoking selenium to update the tickets in service now - Done")
+        logger.info("Invoking selenium to update the tickets in service now - Started")
+        response: bool = updateTasksInSnow(validatedTaskDict)
+        logger.info("Invoking selenium to update the tickets in service now - Done")
 
-            logger.debug(f"response from updateTaskInSnow: {response}")
-            if response :
-                logger.info("tickets are updated successfully")
-            else:
-                logger.error("tickets are not updated sucessfully")
+        logger.debug(f"response from updateTaskInSnow: {response}")
+        if response :
+            logger.info("tickets are updated successfully")
         else:
-            logger.debug("Ticket_update is not enabled in the settings")
+            logger.error("tickets are not updated sucessfully")
+    else:
+        logger.debug("Ticket_update is not enabled in the settings")
 
-        logger.info("checking Ticket_update is enabled or not in settings for invoke selenium - Done")
+    logger.info("checking Ticket_update is enabled or not in settings for invoke selenium - Done")
 
     
 

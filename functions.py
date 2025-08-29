@@ -99,12 +99,12 @@ def getNonRemediatedString(activeMachineDetails: DataFrame | Series) -> str :
         #exclude if last detcted more than 15 days
         if activeMachine["Last Detected(In Days)"] <= 15 :
             if activeMachine["Last Detected(In Days)"] < 5 :
-                nonRemediatedString += f"{activeMachine["NetBIOS"].lower()} \n"
+                nonRemediatedString += f"{activeMachine['NetBIOS'].lower()} \n"
             else:
-                nonRemediatedString += f"{activeMachine["NetBIOS"].lower()} - last detected {activeMachine["Last Detected(In Days)"]} Days \n"
+                nonRemediatedString += f"{activeMachine['NetBIOS'].lower()} - last detected {activeMachine["Last Detected(In Days)"]} Days \n"
 
         else:
-            lastDetectedString += f"{activeMachine["NetBIOS"].lower()} - last detected {activeMachine["Last Detected(In Days)"]} Days- \n"
+            lastDetectedString += f"{activeMachine['NetBIOS'].lower()} - last detected {activeMachine['Last Detected(In Days)']} Days- \n"
 
     logger.info("getNonRemediatedString function - Done")
     return nonRemediatedString + lastDetectedString
@@ -202,7 +202,7 @@ def findAgingTicket(taskOpenedDate: str) -> dict :
 #find root cause and solution and other vulnerablities related details 
 #need to change function of this code beacuse this function will use O(n2) time complexicity
 def findVulnerablityDetails(taskTitle: str,taskDescription: str) -> dict:
-    currentTaskDetails: dict = requestVariables["deafult"]
+    currentTaskDetails: dict = requestVariables["default"]
 
     for record in vulnerablityDetails:
         titleMatched: bool = False

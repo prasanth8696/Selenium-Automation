@@ -1,6 +1,6 @@
 import os
 import logging
-from datetime import datetime
+from datetime import datetime,date,timedelta
 import pandas as pd
 from handler import settings
 
@@ -38,7 +38,22 @@ if settings['Console_logs'] :
 def convert_csv_to_xlsx(file_path:str) -> dict :
     logger.info("convert_csv_to_xlsx function  - Started")
 
-    excel_path = os.path.join( os.getcwd(),"Scheduled-Report-Cloud-Agent-Report-non_Superseded_New.xlsx" )
+    #create the reports folder if it is not present
+    if not os.path.isdir("./reports") :
+       os.mkdir("./reports")
+    
+    #check geneartedDete is today or not
+    #If not today just exit the script
+    reportGeneratedDateAsString: str = os.path.splitext(os.path.basename(file_path))[0].split("-")[-1]
+    reportGeneratedDate: date  = datetime.strptime( reportGeneratedDateAsString,"%Y%m%d%H%M%S" ).date()
+    timeDifference: timedelta = (datetime.today().date() - reportGeneratedDate)
+    if( timeDifference.days > 0 ) :
+        logger.critical(f"The provided  report is not generated today, please check and invoke the script again : timeDiff - {timeDifference.days}")
+        print (f"The provided  report is not generated today, please check and invoke the script again : timeDiff - {timeDifference.days}")
+        exit(-1)
+    else :
+        logger.info(f"The provided  report is generated today : timeDiff - {timeDifference.days}")
+    excel_path = os.path.join( os.getcwd(),"reports","Scheduled-Report-Cloud-Agent-Report-non_Superseded_New-{}.xlsx".format(datetime.today().strftime('%Y%m%d')) )
 
     columnList = ['IP', 'DNS', 'NetBIOS', 'QG Host ID', 'IP Interfaces', 'Tracking Method', 'OS', 'IP Status', 'QID', 'Title', 'Vuln Status', 'Type', 'Severity', 'Port', 'Protocol', 'FQDN', 'SSL', 'First Detected', 'Last Detected', 'Times Detected', 'Date Last Fixed', 'CVE ID', 'Vendor Reference', 'Bugtraq ID', 'CVSS', 'CVSS Base', 'CVSS Temporal', 'CVSS Environment', 'CVSS3.1', 'CVSS3.1 Base', 'CVSS3.1 Temporal', 'Threat', 'Impact', 'Solution', 'Exploitability', 'Results', 'PCI Vuln', 'Ticket State', 'Instance', 'OS CPE', 'Category', 'Associated Tags', 'QDS', 'ARS', 'ACS', 'TruRisk Score']
 
