@@ -6,3 +6,4 @@ venv
 selenium_handler(copy).py
 logs/
 reports/
+settings-dev.json

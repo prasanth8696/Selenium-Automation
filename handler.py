@@ -10,11 +10,17 @@ from pandas import DataFrame,Series
 
 #load the settings.json file
 
-if not os.path.exists("./settings.json") :
-    print("settings.json not found")
+if os.environ.get("environment") == "PROD" :
+    settingsFilePath: str = "./settings.json"
+else :
+    settingsFilePath: str = "./settings-dev.json"
+
+
+if not os.path.exists(settingsFilePath) :
+    print(f"{settingsFilePath} file not found")
     exit(-1)
 
-with open("./settings.json","r") as file :
+with open(settingsFilePath,"r") as file :
     settings: dict = json.load(file)
 
 

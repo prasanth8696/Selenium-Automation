@@ -9,7 +9,11 @@ from functions import getMachineList,getQIDList,getNonRemediatedDetails,findAgin
 from handler import getAssigmentGroup,getAssignedTo,getVulnerablityName,createReport,getTaskState,fileCleanup,settings
 from models import taskSchema
 from task_update import updateTasksInSnow
+from dotenv import load_dotenv
 
+
+# Load variables from the .env file
+load_dotenv()
 
 #enable logging
 logger: logging.getLogger = logging.getLogger(__name__)
