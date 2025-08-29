@@ -9,11 +9,7 @@ from functions import getMachineList,getQIDList,getNonRemediatedDetails,findAgin
 from handler import getAssigmentGroup,getAssignedTo,getVulnerablityName,createReport,getTaskState,fileCleanup,settings
 from models import taskSchema
 from task_update import updateTasksInSnow
-from dotenv import load_dotenv
 
-
-# Load variables from the .env file
-load_dotenv()
 
 #enable logging
 logger: logging.getLogger = logging.getLogger(__name__)
@@ -59,11 +55,17 @@ def main() :
 
     #load CMDB details
     logger.info(f"Loding CMBD data  from {CMDB_FILE_PATH} - Started")
+    if not os.path.isfile(CMDB_FILE_PATH) :
+        logger.critical(f"{CMDB_FILE_PATH} cmdb report not exists")
+        exit(-1)
     computerList: DataFrame | Series = pd.read_excel(CMDB_FILE_PATH)
     logger.info(f"CMDB data data succcessfully loaded - Done")
 
     #load tasklist from json file
     logger.info(f"Loding service now  vulnerablities tasks  from {TASK_REPORT_PATH} - Started")
+    if not os.path.isfile(TASK_REPORT_PATH) :
+        logger.critical(f"{TASK_REPORT_PATH} task report not exists")
+        exit(-1)
     with open(TASK_REPORT_PATH,'r') as file :
         taskList = json.load(file)
         logger.info(f"service now vulnerablities tasks succcessfully loaded - Done")

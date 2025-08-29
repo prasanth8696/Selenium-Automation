@@ -6,10 +6,15 @@ from datetime import date,timedelta
 import pandas as pd
 from pandas import DataFrame,Series
 
+from dotenv import load_dotenv
+
+
+# Load variables from the .env file
+load_dotenv()
+
 
 
 #load the settings.json file
-
 if os.environ.get("environment") == "PROD" :
     settingsFilePath: str = "./settings.json"
 else :
