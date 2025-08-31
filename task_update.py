@@ -456,9 +456,12 @@ def updateNonValidatedTasksInSnow(driver: webdriver,nonValidatedTaskList: list[d
         driver.get(f"https://imf.service-now.com/now/nav/ui/classic/params/target/sc_task.do%3Fsys_id%3D{snowTaskId}%26sysparm_stack%3D%26sysparm_view%3D")
         snowValidationDetails = updateSingleTaskInSnow(driver,currentUserDetails,nonValidatedTaskList)
 
-        if snowValidationDetails["errorDetails"]["title"] == "SNOW_INITIAL_ERROR" or snowValidationDetails["errorDetails"]["title"] == "WEBDRIVER_EXCEPTION" :
-            continue
-        validationDetails['validatedRowCount'] += 1
+        if snowValidationDetails["status"] :
+            validationDetails['validatedRowCount'] += 1
+
+        elif snowValidationDetails["errorDetails"]["title"] == "SNOW_INITIAL_ERROR" or snowValidationDetails["errorDetails"]["title"] == "WEBDRIVER_EXCEPTION" :
+            continue 
+        
         logger.info(f"{snowValidationDetails['taskNumber']} validated sucessfully - {validationDetails['validatedRowCount']}/{validationDetails['totalRows']}")
 
 

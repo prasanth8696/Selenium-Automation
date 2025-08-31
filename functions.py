@@ -90,24 +90,25 @@ def getQIDList(descriptionString: str,searchPattern: str = r"QID[: ].*") -> list
 def getNonRemediatedString(activeMachineDetails: DataFrame | Series) -> str :
 
     logger.info("getNonRemediatedString function - Started")
-    nonRemediatedString: str = "Non Remediated:\n\n"
-    lastDetectedString: str = "\n\nLast Detected More Than 15 days\n"
+    nonRemediatedString: str = "Not Remediated :\n\nDNS:\n"
+    lastDetectedString: str = "\n\nLast Detected More Than 15 days:\n"
     activeMachineDetails = activeMachineDetails.reset_index()
-    actualCount: int = 0; lastDetected15: int = 0
+    lastDetected15: int = 0
     for _,activeMachine in activeMachineDetails.iterrows() :
         
         #exclude if last detcted more than 15 days
         if activeMachine["Last Detected(In Days)"] <= 15 :
             if activeMachine["Last Detected(In Days)"] < 5 :
-                nonRemediatedString += f"{activeMachine['NetBIOS'].lower()} \n"
+                nonRemediatedString += f"{activeMachine['DNS'].lower()} \n"
             else:
-                nonRemediatedString += f"{activeMachine['NetBIOS'].lower()} - last detected {activeMachine['Last Detected(In Days)']} Days \n"
+                nonRemediatedString += f"{activeMachine['DNS'].lower()}   - lastDetectedInDays - {activeMachine['Last Detected(In Days)']} \n"
 
         else:
-            lastDetectedString += f"{activeMachine['NetBIOS'].lower()} - last detected {activeMachine['Last Detected(In Days)']} Days- \n"
+            lastDetected15 += 1
+            lastDetectedString += f"{activeMachine['DNS'].lower()}   - lastDetectedInDays - {activeMachine['Last Detected(In Days)']}  \n"
 
     logger.info("getNonRemediatedString function - Done")
-    return nonRemediatedString + lastDetectedString
+    return (nonRemediatedString + lastDetectedString if lastDetected15 > 0 else nonRemediatedString)
 
     
 
@@ -219,6 +220,46 @@ def findVulnerablityDetails(taskTitle: str,taskDescription: str) -> dict:
             currentTaskDetails = requestVariables.get(record["name"])
 
     return currentTaskDetails
+
+
+def getVulnerblityDetailsForMachine(machineName: str, qulaysReport: DataFrame | Series,cmdbReport: DataFrame | Series) -> str :
+
+    vulnerablityDetailsString: str = f"MACHINE NAME  : {machineName} \n"
+    cmdbDetail : DataFrame | Series = cmdbReport[cmdbReport["Name"].str.lower() == machineName.lower() ]
+
+    if len(cmdbDetail) > 0 :
+        cmdbDetailinDict = cmdbDetail.to_dict(orient='records')[0]
+        vulnerablityDetailsString += f"PRIMARY USER  : {cmdbDetailinDict['Assigned to'] if cmdbDetailinDict['Assigned to'] else 'None' } \n"
+        vulnerablityDetailsString += f"SNOW CI STATUS: {cmdbDetailinDict['CI Status']} \n"
+    else :
+        vulnerablityDetailsString += f"PRIMARY USER  : Not Found \n"
+        vulnerablityDetailsString += f"SNOW CI STATUS: Not Found \n"
+
+    #Get the vulnerblities for current Machine
+    currentVulnerblities: DataFrame | Series = qulaysReport[qulaysReport["NetBIOS"].str.lower() == machineName.lower()]
+
+    vulnerablitiesTitleString: str = "VULNERABILITIES:\n"
+    if len(currentVulnerblities) > 0 :
+        vulnerablityDetailsString += f"LAST DETECTED : {currentVulnerblities.iloc[0]['Last Detected']} \n\n"
+
+        
+        vulnerablitiesCount: int = 0
+        paddingLength: int = len(str(len(currentVulnerblities)))
+        for _,vulnerablity in currentVulnerblities[["Title","QID"]].iterrows() :
+
+            vulnerablitiesCount += 1
+            vulnerablitiesTitleString += f"{vulnerablitiesCount:>{paddingLength}}) {vulnerablity['QID'] :< 7}  :  {vulnerablity['Title']}\n"
+
+    
+    else :
+        vulnerablitiesTitleString += f"No Vulnerablities found for {machineName}"
+    
+    return ( vulnerablityDetailsString + vulnerablitiesTitleString )
+
+
+
+
+
             
 
 
