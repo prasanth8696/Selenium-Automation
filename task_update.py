@@ -143,9 +143,10 @@ def getNonValidatedTasks(validatedTaskList: dict,completedTaskList: list[str],cu
     #for open tickets validation mode
     elif currentMode == "open" :
         nonValidatedTasks = { taskNumber : taskDetails for taskNumber,taskDetails in validatedTaskList.items() if (taskDetails["task State"].lower() == "open" and taskDetails["Number"] not in completedTaskList)}
+   
    #for all tickets validation mode
     else :
-        nonValidatedTasks = validatedTaskList 
+        nonValidatedTasks = { taskNumber : taskDetails for taskNumber,taskDetails in validatedTaskList.items() if taskDetails["Number"] not in completedTaskList}
         #currentModeTasks = list(set(validatedTaskList.keys()) - set(completedTaskList) )
     
     return nonValidatedTasks

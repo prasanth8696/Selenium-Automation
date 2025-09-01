@@ -55,7 +55,7 @@ def main() :
 
     #load CMDB details
     logger.info(f"Loding CMBD data  from {CMDB_FILE_PATH} - Started")
-    if not os.path.isfile(CMDB_FILE_PATH) :
+    if not os.path.exists(CMDB_FILE_PATH) :
         logger.critical(f"{CMDB_FILE_PATH} cmdb report not exists")
         exit(-1)
     computerList: DataFrame | Series = pd.read_excel(CMDB_FILE_PATH)
@@ -63,7 +63,7 @@ def main() :
 
     #load tasklist from json file
     logger.info(f"Loding service now  vulnerablities tasks  from {TASK_REPORT_PATH} - Started")
-    if not os.path.isfile(TASK_REPORT_PATH) :
+    if not os.path.exists(TASK_REPORT_PATH) :
         logger.critical(f"{TASK_REPORT_PATH} task report not exists")
         exit(-1)
     with open(TASK_REPORT_PATH,'r') as file :
@@ -73,7 +73,7 @@ def main() :
     #Load Qulays report and convert if converted xlsx is not yet created
     logger.info(f"Loding Qualys latest report  from {QUALYS_REPORT_PATH} - Started")
     logger.info(f"checking {QUALYS_REPORT_PATH} path is exists or not ")
-    if not os.path.isfile(QUALYS_REPORT_PATH) :
+    if not os.path.exists(QUALYS_REPORT_PATH) :
 
         logger.debug(f"{QUALYS_REPORT_PATH}  Qualys report path not exists")
         logger.info(f"converting  Qulays Raw data  to normal report from {QUALYS_RAW_REPORT_PATH}")

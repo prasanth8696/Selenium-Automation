@@ -1,3 +1,8 @@
+import os
+import logging
+import pandas as pd
+from datetime import datetime
+from pandas import DataFrame,Series
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
@@ -14,8 +19,40 @@ from selenium_handler import (
     getTabSectionSpanTag
 )
 from handler import settings
+from functions import  getVulnerblityDetailsForMachine
+from errorDetails import errorsInfo
+from csv_handler import convert_csv_to_xlsx
 
-def updateSingleTaskInSnow(driver: webdriver,currentUserDetails: dict,validatedTaskList: dict) -> dict :
+
+
+#enable logging
+logger: logging.getLogger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+
+# Create a file handler
+if not os.path.exists(settings["Log_path"]):
+    os.mkdir(settings["Log_path"])
+
+fullLogName: str = os.path.join(settings["Log_path"],eval(settings["Selenium_log_name"]))
+fh = logging.FileHandler(fullLogName)
+fh.setLevel(logging.DEBUG)
+
+
+# Create a formatter
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+fh.setFormatter(formatter)
+
+# Add handlers to the logger
+logger.addHandler(fh)
+
+if settings['Console_logs'] :
+    # Create a console handler
+    ch = logging.StreamHandler()
+    ch.setLevel(logging.DEBUG)
+    ch.setFormatter(formatter)
+    logger.addHandler(ch)
+
+def updateSingleIncidentInSnow(driver: webdriver, qulaysReport: DataFrame | Series, cmdbReport: DataFrame | Series ) -> dict :
 
     try : 
         #initiate snow initial porcess for sc tasks
@@ -24,27 +61,38 @@ def updateSingleTaskInSnow(driver: webdriver,currentUserDetails: dict,validatedT
 
         if not response:
             logger.error("Snow initial process is failed, program exiting")
-            return False 
+            raise WebDriverException
         
         logger.info("Snow initial process for catalog tasks - Done")
 
-        #find the tasknumber ID and get the validated details for the respective task number
-        # logger.info("Extracting task number from service now form UI - Started")
-        # taskNumberTag: WebElement = waitForElement(driver,By.CSS_SELECTOR,"input#sc_task\\.number")
-        # taskNumber: str = taskNumberTag.get_attribute("value")
-        # logger.debug(f"currently working on  task number: {taskNumber}")
-        # logger.info("Extracting task number from service now form UI - Done")
+        #find the incident number ID
+        logger.info("Extracting incident number from service now form UI - Started")
+        incidentNumberTag: WebElement = waitForElement(driver,By.CSS_SELECTOR,"input#sys_readonly\\.incident\\.number")
+        if not incidentNumberTag :
+            logger.critical("Unable to find the incident number tag from the incident page")
+            raise WebDriverException
+
+        incidentNumber: str = incidentNumberTag.get_attribute("value")
+        logger.debug(f"currently working on  task number: {incidentNumber}")
+        logger.info("Extracting incident number from service now form UI - Done")
+
+        #find the affected equipment number
+        logger.info("Extracting affected Equipment number from service now form UI - Started")
+        affectedEquipmentTag: WebElement = waitForElement(driver,By.CSS_SELECTOR,"input#sys_display\\.incident\\.u_pid_or_affected_equipment")
+        if not affectedEquipmentTag :
+            logger.critical("Unable to find the affected equipment tag  from the incident page")
+            raise WebDriverException
+
+        affectedEquipment: str = affectedEquipmentTag.get_attribute("value")
+        logger.debug(f"affected Equipment for current incident: {affectedEquipment}")
+        logger.info("Extracting affected Equipment number from service now form UI - Started")
+
+        #check affected equipment is present or not
+        #If not skip the incident ticket for update
+        if not affectedEquipment :
+            return {"status": False, "errorDetails": errorsInfo["MACHINE_NOT_FOUND"],"data": {"incidentNumber" : incidentNumber}}
+
         
-
-        # if taskNumber :
-        #     #need to get the validated details
-        #     taskDetails: dict = validatedTaskList.get(taskNumber,None)
-        #     logger.debug(f"taskDetails : {taskDetails}")
-        #     if not taskDetails :
-        #         logger.warning("for current task unable to find the validated details, skipping the update")   
-        #         return { "status" : False, "taskNumber" : taskNumber, "errorDetails" : errorsInfo["TASK_NOT_FOUND"]}
-
-
 
         #update workNotes
         #here we have three tabs 
@@ -53,7 +101,7 @@ def updateSingleTaskInSnow(driver: webdriver,currentUserDetails: dict,validatedT
         logger.info("working on the worknotes tab from service now form UI - Started")
         workNotesTab = getTabSectionSpanTag(driver,"Comments and Work Notes")
         #if worknotes tab is none then raise an Exception
-        if not workNotesTab : 
+        if not workNotesTab :
             logger.debug("Unable to find Comments and worknotes tab ,raising exception")
             raise WebDriverException
         
@@ -75,29 +123,27 @@ def updateSingleTaskInSnow(driver: webdriver,currentUserDetails: dict,validatedT
         #find worknotes Tag
         logger.info("working on the worknotes tag from service now form UI - Started")
         workNotesTag: WebElement = waitForElement(driver,By.CSS_SELECTOR,"textarea#activity-stream-textarea")
-        nonRemediatedStr: str = taskDetails["Non-Remediated String"]
-        #add remediation string in the worknotes
+        vulnerablityDetails: str = getVulnerblityDetailsForMachine(affectedEquipment,qualysReport,cmdbReport)
+        #add vulnerablities details in the worknotes
         #for longer text selenium will inefficient to add the text using send_keys so using javascript method to add
         #if asset count + last detcted more than 50 try with javscript else use selenium default methods
-        totalAssetCountInString: int = (taskDetails["Actual Asset Count"] + taskDetails["Last Detected Count(15days)"])
-        if (totalAssetCountInString > 50) :
-            logger.debug(f"total non remdiated sting machine count {totalAssetCountInString} is more than 50 ")
+        
+        if ( vulnerablityDetails["totalVulnerablities"] > 13 ) :
             logger.debug("attempting javascript method to fill the workotes")
             #driver.execute_script("arguments[0].value = arguments[1]",workNotesTag,nonRemediatedStr)
-            driver.execute_script("document.querySelector('#activity-stream-textarea').value = arguments[0]",nonRemediatedStr)
-            time.sleep(1)
+            driver.execute_script("document.querySelector('#activity-stream-textarea').value = arguments[0]",vulnerablityDetails["vulnerablityDetailsString"])
+            time.sleep(1.2)
             #if update values using worknotes , it is updating but while saving it is not got updated in backend
             #updating one space to post entire worknotes
             workNotesTag.send_keys(" ")
             
         else:
-            logger.debug(f"total non remediated sting machine count {totalAssetCountInString} is more than or equal to 50 ")
             logger.debug("attempting selenium default send_keys method to fill the workotes")
-            workNotesTag.send_keys(nonRemediatedStr)
+            workNotesTag.send_keys(vulnerablityDetails["vulnerablityDetailsString"])
         
         logger.info("working on the worknotes tag from service now form UI - Done")
 
-
+        input()
 
         #find save button Tag
         #save the record using save button
@@ -108,8 +154,10 @@ def updateSingleTaskInSnow(driver: webdriver,currentUserDetails: dict,validatedT
         time.sleep(1)
         logger.info("successfully clicked the save button")
         logger.info("successfully saved the changes for current task")
-        return True
+        return { "status": True, "data": {"incidentNumber" : incidentNumber} }
     
+
+
     except WebDriverException as e :
         logger.exception("General webdriver exception raised",e)
         logger.info("skipping to another task")
@@ -119,7 +167,7 @@ def updateSingleTaskInSnow(driver: webdriver,currentUserDetails: dict,validatedT
         return { "status" : False, "errorDetails" : errorsInfo["WEBDRIVER_EXCEPTION"]}
     
 
-def updateIncidentsInSnow():
+def updateIncidentsInSnow(qulaysReport: DataFrame | Series,cmdbReport: DataFrame | Series):
 
     logger.info("updateIncidentsInSnow function started")
     
@@ -152,7 +200,7 @@ def updateIncidentsInSnow():
 
         #get the table details
         logger.info("processing service now table UI - Started")
-        tableTag: WebElement = waitForElement(driver,By.CSS_SELECTOR,"table#sc_task_table")
+        tableTag: WebElement = waitForElement(driver,By.CSS_SELECTOR,"table#task_table")
 
         #get the total rows in the table
         logger.debug("getting the total tasks count - Started")
@@ -181,26 +229,34 @@ def updateIncidentsInSnow():
                 logger.debug('exiting from frame for getting the normal content')
                 driver.switch_to.default_content()
                 logger.info("getting first dirst Tr tag and form link - Done")
+        else :
+            logger.critical("unable to find table Tr tag from incident page")
+            return False 
         
         logger.info("processing service now table UI - Done")
          
 
         validatedRowCount: int = 0
+        emptyMachineIncidents: list = []
         while True :
 
-            snowValidationDetails: dict = updateSingleTaskInSnow(driver,currentUserDetails,validatedTaskList) #need to check  => \
-
-            if snowValidationDetails["status"]  :
-                completedTaskList.append(snowValidationDetails["taskNumber"])
+            snowValidationDetails: dict = updateSingleIncidentInSnow(driver,qualysReport,cmdbReport)
             
-            elif snowValidationDetails["errorDetails"]["title"] == "TASK_NOT_FOUND" :
-                completedTaskList.append(snowValidationDetails["taskNumber"])
+            if snowValidationDetails["status"] :
+                pass
 
+            elif not snowValidationDetails["status"] and snowValidationDetails["errorDetails"]["title"] == "MACHINE_NOT_FOUND" :
+                emptyMachineIncidents.append(snowValidationDetails["data"]["incidentNumber"])
+            
             elif snowValidationDetails["errorDetails"]["title"] == "SNOW_INITIAL_ERROR" :
+                logger.debug(f"Snow Valiation Error : {snowValidationDetails['errorDetails']['title']}")
+                break 
+
+            else :
+                logger.debug(f"Something went wrong : {snowValidationDetails['errorDetails']['title']}")
                 break
 
-            else : 
-                pass
+
             
             
             #find next arrow click button to get the next record
@@ -216,18 +272,9 @@ def updateIncidentsInSnow():
             if nextRecordBtnTagTitle == "Bottom of list displayed" or isNextRecordBtnTagDisabled == "true" :
                 
                 validatedRowCount += 1  
-                logger.info(f"{snowValidationDetails['taskNumber']} validated sucessfully - {validatedRowCount}/{totalRows}")
-                logger.debug("checking the missed tasks now")
- 
-                nonValidatedTasks: list = getNonValidatedTasks(validatedTaskList,completedTaskList,requiredDetails["currentUserDetails"]["userDetails"])
-
-                if nonValidatedTasks :
-                    logger.info(f"updating the nonValidated tasks : {','.join(nonValidatedTasks)}")
-                    updateNonValidatedTasksInSnow(driver,nonValidatedTasks,currentUserDetails,{"validatedRowCount": validatedRowCount,"totalRows": totalRows})
-                else :
-                    logger.info("nonvalidated tasks are empty")
-                    logger.info("this is the bottom of the list so breaking the loop")
+                logger.info(f"{snowValidationDetails['data']['incidentNumber']} validated sucessfully - {validatedRowCount}/{totalRows}")
                 break
+
             else:
                 #click next button record
                 nextRecordBtnTag.click()
@@ -236,9 +283,9 @@ def updateIncidentsInSnow():
                 logger.debug("exiting the frame for getting the normal content")
             
             validatedRowCount += 1
-            logger.info(f"{snowValidationDetails['taskNumber']} validated sucessfully - {validatedRowCount}/{totalRows}")
+            logger.info(f"{snowValidationDetails['data']['incidentNumber']} validated sucessfully - {validatedRowCount}/{totalRows}")
 
-        return True
+        return emptyMachineIncidents
             
 
     except WebDriverException as e :
@@ -248,6 +295,33 @@ def updateIncidentsInSnow():
         logger.exception("something went wrong for additional info",e)
         return False
     finally:
-        #driver.quit()
-        pass
+        driver.quit()
+
+
+if __name__ == "__main__" :
+
+    #load Qualys report
+    QUALYS_REPORT_PATH: str = eval(settings["QUALYS_REPORT_PATH"])
+    if not os.path.exists(QUALYS_REPORT_PATH) :      
+        logger.debug(f"{QUALYS_REPORT_PATH}  Qualys report path not exists")
+        logger.info(f"converting  Qulays Raw data  to normal report from {settings['QUALYS_RAW_REPORT_PATH']}")  
+        res : dict = convert_csv_to_xlsx(settings["QUALYS_RAW_REPORT_PATH"])
+    
+    qualysReport: DataFrame | Series = pd.read_excel(QUALYS_REPORT_PATH)
+
+    #load CMDB details
+    CMDB_FILE_PATH: str = settings["CMDB_FILE_PATH"]
+    if not os.path.exists(CMDB_FILE_PATH) :
+        logger.critical(f"{CMDB_FILE_PATH} cmdb report not exists")
+        exit(-1)
+    cmdbReport: DataFrame | Series = pd.read_excel(CMDB_FILE_PATH)
+
+    response: bool | list = updateIncidentsInSnow(qualysReport,cmdbReport)
+
+    if not response :
+        logger.debug(f"Incident update failed : {response}")
+        exit(-1)
+    logger.info(f"follwing incidents not having the affected equipemnet details: {','.join(response)}")
+    print(response)
+    
 

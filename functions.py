@@ -222,9 +222,9 @@ def findVulnerablityDetails(taskTitle: str,taskDescription: str) -> dict:
     return currentTaskDetails
 
 
-def getVulnerblityDetailsForMachine(machineName: str, qulaysReport: DataFrame | Series,cmdbReport: DataFrame | Series) -> str :
+def getVulnerblityDetailsForMachine(machineName: str, qulaysReport: DataFrame | Series,cmdbReport: DataFrame | Series) -> dict :
 
-    vulnerablityDetailsString: str = f"MACHINE NAME  : {machineName} \n"
+    vulnerablityDetailsString: str = f"MACHINE NAME  : {machineName.upper()} \n"
     cmdbDetail : DataFrame | Series = cmdbReport[cmdbReport["Name"].str.lower() == machineName.lower() ]
 
     if len(cmdbDetail) > 0 :
@@ -248,13 +248,16 @@ def getVulnerblityDetailsForMachine(machineName: str, qulaysReport: DataFrame | 
         for _,vulnerablity in currentVulnerblities[["Title","QID"]].iterrows() :
 
             vulnerablitiesCount += 1
-            vulnerablitiesTitleString += f"{vulnerablitiesCount:>{paddingLength}}) {vulnerablity['QID'] :< 7}  :  {vulnerablity['Title']}\n"
+            vulnerablitiesTitleString += f"{vulnerablitiesCount:>{paddingLength}}) {vulnerablity['QID']:<7}  :  {vulnerablity['Title']}\n"
 
     
     else :
         vulnerablitiesTitleString += f"No Vulnerablities found for {machineName}"
     
-    return ( vulnerablityDetailsString + vulnerablitiesTitleString )
+    return {
+        "totalVulnerablities": len(currentVulnerblities),
+        "vulnerablityDetailsString": ( vulnerablityDetailsString + vulnerablitiesTitleString )
+    } 
 
 
 

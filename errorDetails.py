@@ -14,5 +14,10 @@ errorsInfo: dict = {
         "title": "WEBDRIVER_EXCEPTION",
         "errorCode" : 1003,
         "errorMessage" : "General Web driver exception"
+    },
+    "MACHINE_NOT_FOUND" : {
+        "title": "MACHINE_NOT_FOUND",
+        "errorCode" : 1004,
+        "errorMessage" : "Affected Equipment is not updated in the ticket"
     }
 }
